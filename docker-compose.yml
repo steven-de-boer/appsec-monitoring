@@ -18,8 +18,7 @@ services:
     restart: unless-stopped
     volumes:
       - ./data/grafana/data:/var/lib/grafana
-      - ./configs/grafana/datasource.yml:/etc/grafana/provisioning/datasources/datasour
-ce.yml
+      - ./configs/grafana/datasource.yml:/etc/grafana/provisioning/datasources/datasource.yml
     networks:
       - public
     ports:
