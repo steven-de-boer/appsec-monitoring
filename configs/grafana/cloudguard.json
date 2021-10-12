@@ -19,12 +19,28 @@
     ]
   },
   "editable": true,
+  "fiscalYearStartMonth": 0,
   "gnetId": null,
   "graphTooltip": 1,
   "id": 3,
-  "iteration": 1633638059975,
+  "iteration": 1633988587151,
   "links": [],
+  "liveNow": false,
   "panels": [
+    {
+      "collapsed": false,
+      "datasource": null,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 15,
+      "panels": [],
+      "title": "Overview",
+      "type": "row"
+    },
     {
       "datasource": "Elasticsearch",
       "fieldConfig": {
@@ -82,7 +98,7 @@
         "h": 7,
         "w": 12,
         "x": 0,
-        "y": 0
+        "y": 1
       },
       "id": 2,
       "options": {
@@ -101,17 +117,6 @@
           "alias": "",
           "bucketAggs": [
             {
-              "field": "severity.keyword",
-              "id": "3",
-              "settings": {
-                "min_doc_count": "1",
-                "order": "desc",
-                "orderBy": "_count",
-                "size": "10"
-              },
-              "type": "terms"
-            },
-            {
               "field": "@timestamp",
               "id": "4",
               "settings": {
@@ -128,7 +133,7 @@
               "type": "count"
             }
           ],
-          "query": "assetName:$assetName AND securityAction:$securityAction AND severity:$severity AND sourceIP:$sourceIP AND httpHostName:$httpHostName AND *$other* ",
+          "query": "(_exists_:title)",
           "refId": "A",
           "timeField": "@timestamp"
         }
@@ -168,13 +173,38 @@
           ],
           "unit": "Requests"
         },
-        "overrides": []
+        "overrides": [
+          {
+            "__systemRef": "hideSeriesFrom",
+            "matcher": {
+              "id": "byNames",
+              "options": {
+                "mode": "exclude",
+                "names": [
+                  "Count"
+                ],
+                "prefix": "All except:",
+                "readOnly": true
+              }
+            },
+            "properties": [
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": true
+                }
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 7,
-        "w": 12,
+        "w": 6,
         "x": 12,
-        "y": 0
+        "y": 1
       },
       "id": 8,
       "options": {
@@ -224,12 +254,121 @@
               "type": "count"
             }
           ],
-          "query": "assetName:$assetName AND securityAction:$securityAction AND severity:$severity AND sourceIP:$sourceIP AND httpHostName:$httpHostName AND *$other* ",
+          "query": "(_exists_:title)",
           "refId": "A",
           "timeField": "@timestamp"
         }
       ],
       "title": "Security Actions Distribution",
+      "type": "piechart"
+    },
+    {
+      "datasource": "Elasticsearch",
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            }
+          },
+          "mappings": [],
+          "unit": "Requests"
+        },
+        "overrides": [
+          {
+            "__systemRef": "hideSeriesFrom",
+            "matcher": {
+              "id": "byNames",
+              "options": {
+                "mode": "exclude",
+                "names": [
+                  "Count",
+                  "Remote Code Execution, Vulnerability Scanning",
+                  "Vulnerability Scanning"
+                ],
+                "prefix": "All except:",
+                "readOnly": true
+              }
+            },
+            "properties": [
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": true
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 6,
+        "x": 18,
+        "y": 1
+      },
+      "id": 12,
+      "options": {
+        "displayLabels": [
+          "percent"
+        ],
+        "legend": {
+          "displayMode": "table",
+          "placement": "right",
+          "values": [
+            "percent",
+            "value"
+          ]
+        },
+        "pieType": "pie",
+        "reduceOptions": {
+          "calcs": [
+            "count"
+          ],
+          "fields": "/^Count$/",
+          "values": true
+        },
+        "tooltip": {
+          "mode": "single"
+        }
+      },
+      "pluginVersion": "8.2.0",
+      "targets": [
+        {
+          "alias": "",
+          "bucketAggs": [
+            {
+              "field": "waapIncidentType.keyword",
+              "id": "2",
+              "settings": {
+                "min_doc_count": "1",
+                "order": "desc",
+                "orderBy": "_count",
+                "size": "10"
+              },
+              "type": "terms"
+            }
+          ],
+          "metrics": [
+            {
+              "id": "1",
+              "type": "count"
+            }
+          ],
+          "query": "(_exists_:title)",
+          "refId": "A",
+          "timeField": "@timestamp"
+        }
+      ],
+      "title": "Incident Types",
       "type": "piechart"
     },
     {
@@ -241,7 +380,8 @@
           },
           "custom": {
             "align": "auto",
-            "displayMode": "auto"
+            "displayMode": "auto",
+            "filterable": true
           },
           "mappings": [],
           "thresholds": {
@@ -261,16 +401,16 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 6,
+        "h": 7,
         "w": 24,
         "x": 0,
-        "y": 7
+        "y": 8
       },
       "id": 11,
       "options": {
         "showHeader": true
       },
-      "pluginVersion": "8.1.5",
+      "pluginVersion": "8.2.0",
       "targets": [
         {
           "alias": "",
@@ -281,73 +421,18 @@
               "settings": {
                 "min_doc_count": "1",
                 "order": "desc",
-                "orderBy": "1",
+                "orderBy": "_count",
                 "size": "10"
               },
               "type": "terms"
             },
             {
-              "field": "securityAction.keyword",
+              "field": "waapIncidentType.keyword",
               "id": "3",
               "settings": {
                 "min_doc_count": "1",
                 "order": "desc",
-                "orderBy": "_term",
-                "size": "10"
-              },
-              "type": "terms"
-            },
-            {
-              "field": "eventConfidence.keyword",
-              "id": "4",
-              "settings": {
-                "min_doc_count": "1",
-                "order": "desc",
-                "orderBy": "_term",
-                "size": "10"
-              },
-              "type": "terms"
-            },
-            {
-              "field": "assetName.keyword",
-              "id": "5",
-              "settings": {
-                "min_doc_count": "1",
-                "order": "desc",
-                "orderBy": "_term",
-                "size": "10"
-              },
-              "type": "terms"
-            },
-            {
-              "field": "httpHostName.keyword",
-              "id": "6",
-              "settings": {
-                "min_doc_count": "1",
-                "order": "desc",
-                "orderBy": "_term",
-                "size": "10"
-              },
-              "type": "terms"
-            },
-            {
-              "field": "severity.keyword",
-              "id": "7",
-              "settings": {
-                "min_doc_count": "1",
-                "order": "desc",
-                "orderBy": "_term",
-                "size": "10"
-              },
-              "type": "terms"
-            },
-            {
-              "field": "matchedSample.keyword",
-              "id": "8",
-              "settings": {
-                "min_doc_count": "1",
-                "order": "desc",
-                "orderBy": "_term",
+                "orderBy": "_count",
                 "size": "10"
               },
               "type": "terms"
@@ -359,35 +444,69 @@
               "type": "count"
             }
           ],
-          "query": "assetName:$assetName AND securityAction:$securityAction AND severity:$severity AND sourceIP:$sourceIP AND httpHostName:$httpHostName AND *$other* ",
+          "query": "(_exists_:title)",
           "refId": "A",
           "timeField": "@timestamp"
         }
       ],
-      "title": "Incident Groups",
+      "title": "Most common sources & attacks",
       "type": "table"
     },
     {
       "datasource": null,
       "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "displayMode": "auto",
+            "filterable": true
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "httpMethod"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 105
+              }
+            ]
+          }
+        ]
+      },
       "gridPos": {
-        "h": 20,
+        "h": 9,
         "w": 24,
         "x": 0,
-        "y": 13
+        "y": 15
       },
       "id": 10,
       "options": {
-        "dedupStrategy": "exact",
-        "enableLogDetails": true,
-        "prettifyLogMessage": true,
-        "showCommonLabels": false,
-        "showLabels": false,
-        "showTime": true,
-        "sortOrder": "Descending",
-        "wrapLogMessage": true
+        "showHeader": true,
+        "sortBy": []
       },
-      "pluginVersion": "8.1.5",
+      "pluginVersion": "8.2.0",
       "targets": [
         {
           "alias": "",
@@ -401,184 +520,120 @@
               "type": "logs"
             }
           ],
-          "query": "assetName:$assetName AND securityAction:$securityAction AND severity:$severity AND sourceIP:$sourceIP AND httpHostName:$httpHostName AND *$other* ",
+          "query": "(_exists_:title)",
           "refId": "A",
           "timeField": "@timestamp"
         }
       ],
       "title": "Logs",
-      "transformations": [],
-      "type": "logs"
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "_id": true,
+              "_index": true,
+              "_source": true,
+              "_type": true,
+              "agentId": true,
+              "assetId": true,
+              "eventReferenceId": true,
+              "extradata": true,
+              "highlight": true,
+              "host": true,
+              "httpRequestHeaders": true,
+              "httpUriPath": true,
+              "httpUriQuery": true,
+              "ident": true,
+              "issuingEngineVersion": true,
+              "level": true,
+              "logIndex": true,
+              "message": true,
+              "msgid": true,
+              "pid": true,
+              "practiceId": true,
+              "practiceName": true,
+              "practiceSubType": true,
+              "practiceType": true,
+              "pri": true,
+              "ruleName": true,
+              "serviceFamilyId": true,
+              "serviceId": true,
+              "serviceName": true,
+              "sort": true,
+              "sourceIP": false,
+              "sourcePort": true,
+              "time": true
+            },
+            "indexByName": {},
+            "renameByName": {}
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "collapsed": true,
+      "datasource": null,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 24
+      },
+      "id": 17,
+      "panels": [
+        {
+          "datasource": null,
+          "gridPos": {
+            "h": 5,
+            "w": 24,
+            "x": 0,
+            "y": 2
+          },
+          "id": 19,
+          "options": {
+            "dedupStrategy": "none",
+            "enableLogDetails": true,
+            "prettifyLogMessage": false,
+            "showCommonLabels": false,
+            "showLabels": false,
+            "showTime": false,
+            "sortOrder": "Descending",
+            "wrapLogMessage": false
+          },
+          "targets": [
+            {
+              "alias": "",
+              "bucketAggs": [],
+              "metrics": [
+                {
+                  "id": "1",
+                  "settings": {
+                    "size": "500"
+                  },
+                  "type": "raw_data"
+                }
+              ],
+              "query": "(_exists_:title)",
+              "refId": "A",
+              "timeField": "@timestamp"
+            }
+          ],
+          "title": "Panel Title",
+          "type": "logs"
+        }
+      ],
+      "title": "Logs",
+      "type": "row"
     }
   ],
-  "refresh": "5s",
-  "schemaVersion": 30,
+  "refresh": false,
+  "schemaVersion": 31,
   "style": "dark",
   "tags": [],
   "templating": {
     "list": [
-      {
-        "allValue": null,
-        "current": {
-          "selected": true,
-          "text": [
-            "All"
-          ],
-          "value": [
-            "$__all"
-          ]
-        },
-        "datasource": null,
-        "definition": "{\"find\" : \"terms\" , \"field\" : \"assetName.keyword\"}",
-        "description": null,
-        "error": null,
-        "hide": 0,
-        "includeAll": true,
-        "label": "Asset",
-        "multi": true,
-        "name": "assetName",
-        "options": [],
-        "query": "{\"find\" : \"terms\" , \"field\" : \"assetName.keyword\"}",
-        "refresh": 2,
-        "regex": "",
-        "skipUrlSync": false,
-        "sort": 1,
-        "type": "query"
-      },
-      {
-        "allValue": null,
-        "current": {
-          "selected": true,
-          "text": [
-            "All"
-          ],
-          "value": [
-            "$__all"
-          ]
-        },
-        "datasource": null,
-        "definition": "{\"find\" : \"terms\" , \"field\" : \"httpHostName.keyword\"}",
-        "description": null,
-        "error": null,
-        "hide": 0,
-        "includeAll": true,
-        "label": "Hostname",
-        "multi": true,
-        "name": "httpHostName",
-        "options": [],
-        "query": "{\"find\" : \"terms\" , \"field\" : \"httpHostName.keyword\"}",
-        "refresh": 2,
-        "regex": "",
-        "skipUrlSync": false,
-        "sort": 1,
-        "type": "query"
-      },
-      {
-        "allValue": null,
-        "current": {
-          "selected": true,
-          "text": [
-            "All"
-          ],
-          "value": [
-            "$__all"
-          ]
-        },
-        "datasource": null,
-        "definition": "{\"find\" : \"terms\" , \"field\" : \"securityAction.keyword\"}",
-        "description": null,
-        "error": null,
-        "hide": 0,
-        "includeAll": true,
-        "label": "Action",
-        "multi": true,
-        "name": "securityAction",
-        "options": [],
-        "query": "{\"find\" : \"terms\" , \"field\" : \"securityAction.keyword\"}",
-        "refresh": 2,
-        "regex": "",
-        "skipUrlSync": false,
-        "sort": 1,
-        "type": "query"
-      },
-      {
-        "allValue": null,
-        "current": {
-          "selected": true,
-          "text": [
-            "All"
-          ],
-          "value": [
-            "$__all"
-          ]
-        },
-        "datasource": null,
-        "definition": "{\"find\" : \"terms\" , \"field\" : \"severity.keyword\"}",
-        "description": null,
-        "error": null,
-        "hide": 0,
-        "includeAll": true,
-        "label": "Severity",
-        "multi": true,
-        "name": "severity",
-        "options": [],
-        "query": "{\"find\" : \"terms\" , \"field\" : \"severity.keyword\"}",
-        "refresh": 2,
-        "regex": "",
-        "skipUrlSync": false,
-        "sort": 1,
-        "type": "query"
-      },
-      {
-        "allValue": null,
-        "current": {
-          "selected": true,
-          "text": [
-            "All"
-          ],
-          "value": [
-            "$__all"
-          ]
-        },
-        "datasource": null,
-        "definition": "{\"find\" : \"terms\" , \"field\" : \"sourceIP.keyword\"}",
-        "description": null,
-        "error": null,
-        "hide": 0,
-        "includeAll": true,
-        "label": "Source",
-        "multi": true,
-        "name": "sourceIP",
-        "options": [],
-        "query": "{\"find\" : \"terms\" , \"field\" : \"sourceIP.keyword\"}",
-        "refresh": 2,
-        "regex": "",
-        "skipUrlSync": false,
-        "sort": 1,
-        "type": "query"
-      },
-      {
-        "current": {
-          "selected": false,
-          "text": "",
-          "value": ""
-        },
-        "description": null,
-        "error": null,
-        "hide": 0,
-        "label": "Other",
-        "name": "other",
-        "options": [
-          {
-            "selected": true,
-            "text": "",
-            "value": ""
-          }
-        ],
-        "query": "",
-        "skipUrlSync": false,
-        "type": "textbox"
-      },
       {
         "datasource": "Elasticsearch",
         "description": null,
@@ -593,12 +648,12 @@
     ]
   },
   "time": {
-    "from": "now-6h",
+    "from": "now-3h",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "",
-  "title": "CloudGuard AppSec Dashboard",
-  "uid": "Zya47Fvnk",
-  "version": 38
+  "title": "CloudGuard AppSec Dashboard v1",
+  "uid": "v0WQPlv7k",
+  "version": 17
 }
